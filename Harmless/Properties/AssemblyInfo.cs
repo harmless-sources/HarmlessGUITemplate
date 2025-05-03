@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Visual Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpectralWave ContentWarning")]
+[assembly: AssemblyTitle("Harmless")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HP")]
-[assembly: AssemblyProduct("SpectralWave ContentWarning")]
+[assembly: AssemblyProduct("Harmless")]
 [assembly: AssemblyCopyright("Copyright © HP 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
