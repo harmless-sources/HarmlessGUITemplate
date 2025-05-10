@@ -31,41 +31,44 @@ namespace Harmless.Texture
             return value;
         }
 
-        static float Scale = 1f;
+                static float Scale = 1f;
         static bool Pressed = false;
+
+        static Dictionary<int, (float Scale, bool Pressed)> Buttons = new(); /* gonna use ids so animations dont play on all */
+
         public static void CreateButton(string text, System.Action Act)
         {
-            float Scaling = Pressed ? 0.95f : 1f;
-            Scale = Mathf.Lerp(Scale, Scaling, 0.2f);
+            Rect GetRect = DrawTexture.GetRect(320, 40);
+            Vector2 center = new(GetRect.x + 80, GetRect.y + 20);
 
-            Rect BaseRect = DrawTexture.GetRect(320, 40);
-            GUILayout.BeginHorizontal();
+            int hashid = $"{text}y{GetRect.y}".GetHashCode(); /* Hash Id */
+            if (!Buttons.ContainsKey(hashid))
+                Buttons[hashid] = (1f, false);
 
-            Vector2 center = new Vector2(BaseRect.x + 80, BaseRect.y + 20);
-            Rect ButtonRect = new Rect(center.x - 160 * Scale / 2f, center.y - 25f * Scale / 2f, 160 * Scale, 25f * Scale);
+            var state = Buttons[hashid];
+            state.Scale = Mathf.Lerp(state.Scale, state.Pressed ? 0.95f : 1f, 0.2f);
 
+            Rect ButtonRect = new Rect(center.x - 80 * state.Scale, center.y - 12.5f * state.Scale, 160 * state.Scale, 25f * state.Scale);
             DrawTexture.DrawTextureRounded(ButtonRect, ButtonTexture, ScaleMode.StretchToFill, true, 1f, Color.white, Vector4.zero, new Vector4(6, 6, 6, 6));
 
-            GUIStyle style = new GUIStyle(GUIStyle.none)
+            Event Event = Event.current; 
+            if (Event.type == EventType.MouseDown && ButtonRect.Contains(Event.mousePosition))
+                state.Pressed = true;
+            if (Event.type == EventType.MouseUp)
+            {
+                if (state.Pressed && ButtonRect.Contains(Event.mousePosition))
+                    Act?.Invoke();
+                state.Pressed = false;
+            }
+            GUI.Label(ButtonRect, $"<b>{text}</b>", new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleCenter,
                 richText = true,
                 normal = { textColor = Color.white }
-            };
-            
-            if (Event.current.type == EventType.MouseDown && ButtonRect.Contains(Event.current.mousePosition))
-                Pressed = true;
-            if (Event.current.type == EventType.MouseUp)
-            {
-                if (Pressed && ButtonRect.Contains(Event.current.mousePosition))
-                    Act?.Invoke();
-                Pressed = false;
-            }
+            });
 
-            GUI.Label(ButtonRect, $"<b>{text}</b>", style);
-
-            GUILayout.EndHorizontal();
-            GUILayout.Space(3f);
+            Buttons[hashid] = state;
+            GUILayout.Space(3);
         }
         public static float CreateSlider(string Text, float value, float min, float max)
         {
