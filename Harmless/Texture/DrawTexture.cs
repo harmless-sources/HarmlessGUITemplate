@@ -23,42 +23,21 @@ namespace Harmless.Texture
             tex.Apply();
             return tex;
         };
-        public static Color32 HexToColor32(string hex, byte value = 255)
-        {
-            hex = hex.StartsWith("#") ? hex.Substring(1) : hex;
-            byte r = byte.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
-            byte g = byte.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
-            byte b = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
-            if (hex.Length == 8)
-            {
-                byte a = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
-                return new Color32(r, g, b, a);
-            }
-            else
-            {
-                return new Color32(r, g, b, value);
-            }
+        public static Color32 HexToColor32(string hex)
+        {   
+            if (ColorUtility.TryParseHtmlString(hex, out Color color))
+             return (Color32)color;
+              return new Color32(255, 255, 255, 255);
         }
         public static Color32 Color32(byte R, byte G, byte B, byte A = byte.MaxValue)
         {
             return new Color32(R, G, B, A);
         }
         public static Color HexToColor(string hex)
-        {
-            hex = hex.StartsWith("#") ? hex.Substring(1) : hex;
-            float r = int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber) / 255f;
-            float g = int.Parse(hex.Substring(2, 2), NumberStyles.HexNumber) / 255f;
-            float b = int.Parse(hex.Substring(4, 2), NumberStyles.HexNumber) / 255f;
-
-            if (hex.Length == 8)
-            {
-                float a = int.Parse(hex.Substring(6, 2), NumberStyles.HexNumber) / 255f;
-                return new Color(r, g, b, a);
-            }
-            else
-            {
-                return new Color(r, g, b, 1f);
-            }
+        {       
+              if (ColorUtility.TryParseHtmlString(hex, out Color color))
+               return color;
+                 return Color.white;
         }
         public static Func<string, Texture2D> BaseToTexture = s =>
         {
